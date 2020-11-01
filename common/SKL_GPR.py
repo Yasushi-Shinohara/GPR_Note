@@ -1,7 +1,8 @@
 import numpy as np
-from scipy.stats import norm
+from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process import kernels
 
-def PF(_xsample, _ysample, _x, _deg, normalization = True):
+def Regression1D(GPR,_xsample, _ysample, _x, normalization = True):
     if (normalization):
         xmin = np.amin(_x)
         xmax = np.amax(_x)
@@ -12,10 +13,11 @@ def PF(_xsample, _ysample, _x, _deg, normalization = True):
         ymax = np.amax(_ysample)
         ymid = 0.5*(ymin + ymax)
         _ysample = (_ysample - ymid)/(ymax - ymin)
-    Nsample = len(_xsample)
-    polyinfo = np.polyfit(_xsample, _ysample, _deg)
-    p = np.poly1d(polyinfo)
-    mean = p(_x)
+    _Xsample = _xsample.reshape(-1,1)
+    GPR.fit(_Xsample, _ysample)
+    _X = _x.reshape(-1,1)
+    mean, std = GPR.predict(_X, return_std=True) #Get the maen and standard error for the first trial set
     if (normalization):
         mean = mean*(ymax - ymin) + ymid
-    return mean
+        std = std*(ymax -ymin)
+    return mean, std
