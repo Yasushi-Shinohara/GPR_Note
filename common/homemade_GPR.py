@@ -27,7 +27,7 @@ class Gaussian_Process_Regression():
             self.a1_const
         return self.K
     
-    def xsample2meanvariance(self,_xsample, _ysample, _x, eps = 1.0e-8, normalization = True):
+    def xsample2meanstd(self,_xsample, _ysample, _x, eps = 1.0e-8, normalization = True):
         if (normalization):
             xmin = np.amin(_x)
             xmax = np.amax(_x)
