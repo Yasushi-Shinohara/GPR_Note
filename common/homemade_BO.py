@@ -47,7 +47,7 @@ def DO_BO(GPR, BO, x2y, x, x_sample_init, y_sample_init, Nepoch, nplotevery, ans
     plt.figure(figsize=(16, 20))
 
     for i in range(Nepoch):
-        mean, std = GPR.xsample2meanstd(x_sample, y_sample, x, eps = 1.0e-10) #Get mean/std
+        mean, std = GPR.xsample2meanstd(x_sample, y_sample, x) #Get mean/std
         maxval = max(y_sample)                                                     #Update maximum value up to now
         acqui = BO.get_acqui(mean, std, maxval)                                      #Define acquisition function
         if(i%nplotevery==0):

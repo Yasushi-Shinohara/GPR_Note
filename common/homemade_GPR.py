@@ -2,7 +2,7 @@ import numpy as np
 from scipy.stats import norm
 
 class Gaussian_Process_Regression():
-    def __init__(self):
+    def __init__(self, alpha = 1.0e-8):
         self.K = None
 #        self.kernel_name1 = 'RBF'
         self.a1_RBF = 1.0
@@ -11,6 +11,7 @@ class Gaussian_Process_Regression():
         self.a2_exp = 1.0
         #self.a1_linear = 1.0
         self.a1_const = 1.0
+        self.alpha = alpha
         
 
     def xx2K(self,xn,xm):
@@ -27,7 +28,7 @@ class Gaussian_Process_Regression():
             self.a1_const
         return self.K
     
-    def xsample2meanstd(self,_xsample, _ysample, _x, eps = 1.0e-8, normalization = True):
+    def xsample2meanstd(self,_xsample, _ysample, _x, normalization = True):
         if (normalization):
             xmin = np.amin(_x)
             xmax = np.amax(_x)
@@ -38,12 +39,12 @@ class Gaussian_Process_Regression():
             ymax = np.amax(_ysample)
             ymid = 0.5*(ymin + ymax)
             _ysample = (_ysample - ymid)/(ymax - ymin)            
-        self.K = self.xx2K(_xsample,_xsample) + eps*np.eye(len(_xsample))
+        self.K = self.xx2K(_xsample,_xsample) + self.alpha*np.eye(len(_xsample))
         L = np.linalg.cholesky(self.K)
         #plt.matshow(K)
         #plt.matshow(L)
         kast = self.xx2K(_xsample,_x)
-        kastast = self.xx2K(_x,_x) + eps*np.eye(len(_x))
+        kastast = self.xx2K(_x,_x) + self.alpha*np.eye(len(_x))
         w = np.linalg.solve(L, _ysample)
         z = np.linalg.solve(L.T, w)
         mean = np.dot(kast.T, z)
