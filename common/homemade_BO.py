@@ -60,7 +60,7 @@ def DO_BO(GPR, BO, x2y, x, x_sample_init, y_sample_init, Nepoch, nplotevery, ans
             lower_bound = mean- 1.0*std
             plt.fill_between(x,high_bound,lower_bound, alpha=0.5)
             plt.xlim(xmin,xmax)
-            plt.ylim(1.2*np.amin(mean),1.2*np.amax(mean))
+            plt.ylim(1.2*min(np.amin(mean),min(y_sample)),1.2*max(np.amax(mean),max(y_sample)))
             if (answer_is_there):
                 plt.ylim(1.2*np.amin(y),1.2*np.amax(y))
             plt.scatter(x_sample,y_sample)
