@@ -1,21 +1,31 @@
 from scipy.stats import norm
 #
 class  Bayesian_opt():
-    def __init__(self):
+    def __init__(self, xi = 0.01, kappa = 5.0):
         self.acqui_name = 'PI' #'PI', 'EI', 'UCB'
-        self.xi = 0.01
+        self.xi = 1.0*xi
+        self.kappa = 1.0*kappa
 
 #### PI
     def acqui_PI(self, mean, std, maxval):
+        if (self.xi < 0):
+            print('# ERROR: xi-value, '+str(self.xi)+', is negative.')
+            sys.exit()
         Z = (mean -  maxval - self.xi)/std
         return norm.cdf(Z)
 #### EI
     def acqui_EI(self, mean, std, maxval):
+        if (self.xi < 0):
+            print('# ERROR: xi-value, '+str(self.xi)+', is negative.')
+            sys.exit()
         Z = (mean -  maxval - self.xi)/std
         return (mean - maxval - self.xi)*norm.cdf(Z) + std*norm.pdf(Z)
 #### UCB
     def acqui_UCB(self, mean, std, maxval):
-        return mean + 1.0*std
+        if (self.xi < 0):
+            print('# ERROR: kappa-value, '+str(self.kappa)+', is negative.')
+            sys.exit()
+        return mean + self.kappa*std
 
     def get_acqui(self, mean, std, maxval):
         if (self.acqui_name == 'PI'):
